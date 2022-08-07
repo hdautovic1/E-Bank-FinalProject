@@ -1,14 +1,47 @@
 ﻿@{
     ViewData["Title"] = "Login page";
     var returnUrl = ViewData["ReturnUrl"] as string;
+    var error = TempData["Error"] as string;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Login</h1>
+ 
+
     <form action="/login?ReturnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
-        <input type="text" name="username" placeholder="Username " />
-        <input type="password" name="password" placeholder="Password" />
-        <input type="submit" value="login" />
+        <div class="container" style="width:30%">
+            <div class="row">
+                <div class="col-6"></div>
+                <h1 class="display-4">Login</h1>
+            </div>
+            <div class="row">
+                <label>Username:</label>
+                <div class="col-6 ">
+                     <input type="text" name="username" placeholder="Username" />       
+                </div>
+                <div class="w-100 d-none d-md-block"></div>
+                
+                <label>Password:</label>
+                <div class="col-6">
+                     <input type="password" name="password" placeholder="Password" />      
+                </div>
+                <div class="w-100 d-none d-md-block"></div>
+
+                <div class="col-6"> 
+                    <input type="submit" value="login" />
+                </div>
+   
+            </div>  
+        </div>      
 
     </form>
-</div>
+
+
+
+    </div>
+     @if (!string.IsNullOrEmpty(error))
+    {
+        <h3 class="alert-danger" style="padding:10px">@error</h3>
+    }</div>
+
+
+
+

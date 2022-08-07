@@ -3,6 +3,11 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p></p>
+    <h1 class="display-4">Welcome @User.Identity.Name</h1>
+    <ul>
+        @foreach(var c in User.Claims)
+        {
+            <li>@c.Type: @c.Value </li>
+        }
+    </ul>
 </div>
