@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using E_Bank_FinalProject.Data;
 using E_Bank_FinalProject.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace E_Bank_FinalProject.Controllers
 {
@@ -36,7 +40,7 @@ namespace E_Bank_FinalProject.Controllers
             }
 
             var user = await _context.User
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.UserID == id);
             if (user == null)
             {
                 return NotFound();
@@ -56,7 +60,7 @@ namespace E_Bank_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Surname,Email,Password")] User user)
+        public async Task<IActionResult> Create([Bind("UserID,UserName,FirstName,LastName,Email,Password,ConfirmedPassword")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -88,9 +92,9 @@ namespace E_Bank_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Surname,Email,Password")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("UserID,UserName,FirstName,LastName,Email,Password,ConfirmedPassword")] User user)
         {
-            if (id != user.ID)
+            if (id != user.UserID)
             {
                 return NotFound();
             }
@@ -104,7 +108,7 @@ namespace E_Bank_FinalProject.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.ID))
+                    if (!UserExists(user.UserID))
                     {
                         return NotFound();
                     }
@@ -127,7 +131,7 @@ namespace E_Bank_FinalProject.Controllers
             }
 
             var user = await _context.User
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.UserID == id);
             if (user == null)
             {
                 return NotFound();
@@ -157,7 +161,59 @@ namespace E_Bank_FinalProject.Controllers
 
         private bool UserExists(int id)
         {
-          return (_context.User?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.User?.Any(e => e.UserID == id)).GetValueOrDefault();
         }
+
+        [HttpGet("denied")]
+        public IActionResult Denied()
+        {
+            return View();
+        }
+        [HttpGet("login")]
+        public IActionResult Login(string returnUrl)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Validate(string email, string password, string returnUrl)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            var user = _context.User.Where(u => email == u.Email && password == u.Password);
+
+          
+            if (!user.Any())
+            {
+                return View("login");
+            }
+            var u = user.First();
+            var role = _context.UserRoles.Where(ur => ur.User == u).Include(ur=>ur.Role);
+            var r = role.First().Role;
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Name, u.FirstName));
+            claims.Add(new Claim(ClaimTypes.Surname, u.LastName));
+            claims.Add(new Claim(ClaimTypes.Email, u.Email));         
+            claims.Add(new Claim(ClaimTypes.Role,r.Name ));
+            claims.Add(new Claim("username", u.UserName));
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            await HttpContext.SignInAsync(claimsPrincipal);
+            return Redirect(returnUrl);
+        
+        }
+
+        [Authorize(Roles = "Admin,User")]
+        public IActionResult MyProfile()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return Redirect("/");
+        }
+
     }
 }

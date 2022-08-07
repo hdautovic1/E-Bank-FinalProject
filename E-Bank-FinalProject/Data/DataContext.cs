@@ -19,6 +19,12 @@ namespace E_Bank_FinalProject.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<E_Bank_FinalProject.Models.User>().ToTable("User");
+            modelBuilder.Entity<E_Bank_FinalProject.Models.UserRoles>().ToTable("UserRoles");
+            modelBuilder.Entity<E_Bank_FinalProject.Models.Role>().ToTable("Role");
         }
+
+        public DbSet<E_Bank_FinalProject.Models.Role>? Role { get; set; }
+
+        public DbSet<E_Bank_FinalProject.Models.UserRoles>? UserRoles { get; set; }
     }
 }
