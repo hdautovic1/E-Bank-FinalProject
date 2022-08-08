@@ -9,12 +9,16 @@ namespace E_Bank_FinalProject.Models
 
       
         [StringLength(50)]
+        [Display(Name = "Username")]
         public string UserName { get; set; }
       
         [StringLength(50)]
+        [Display(Name ="First name")]
         public string FirstName { get; set; }
 
         [StringLength(50)]
+
+        [Display(Name = "Last name")]
         public string LastName { get; set; }
         
         [StringLength(100)]
@@ -23,6 +27,7 @@ namespace E_Bank_FinalProject.Models
         
         [DataType(DataType.Password)]
         [StringLength(50)]
+        [Display(Name = "password")]
         public string Password { get; set; }
 
         
@@ -30,6 +35,7 @@ namespace E_Bank_FinalProject.Models
         [Compare("Password", ErrorMessage = "Passwords do not match!")]
         [StringLength(50)]
 
+        [Display(Name = "password")]
         public string ConfirmedPassword { get; set; }
 
         }

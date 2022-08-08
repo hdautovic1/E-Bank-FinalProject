@@ -21,9 +21,95 @@ namespace E_Bank_FinalProject.Controllers
         public UsersController(DataContext context)
         {
             _context = context;
+        }       
+
+        public IActionResult Register()
+        {
+            return View();
         }
 
-        // GET: Users
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([Bind("UserID,UserName,FirstName,LastName,Email,Password,ConfirmedPassword")] User user)
+        {
+            if (ModelState.IsValid)
+            {
+                UserRoles userRoles = new UserRoles();
+                userRoles.User = user;
+                var role = _context.Role.Where(r =>
+                    r.Name == "User"
+                );
+                userRoles.Role = role.First();
+                _context.Add(user);
+                _context.UserRoles.Add(userRoles);
+                await _context.SaveChangesAsync();
+                return View("login");
+            }
+            return View(user);
+        }
+
+
+        [HttpGet("denied")]
+        public IActionResult Denied()
+        {
+            return View();
+        }
+        [HttpGet("login")]
+        public IActionResult Login(string returnUrl)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Validate(string email, string password, string returnUrl)
+        {
+
+            ViewData["ReturnUrl"] = returnUrl;
+            var u = _context.User.Where(u => email == u.Email && password == u.Password).First();
+
+
+            if (u == null)
+            {
+                return View("login");
+            }
+            var r = _context.UserRoles.Where(ur => ur.User == u).Include(ur => ur.Role).First().Role;
+
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, u.FirstName),
+                new Claim(ClaimTypes.Surname, u.LastName),
+                new Claim(ClaimTypes.Email, u.Email),
+                new Claim(ClaimTypes.Role, r.Name),
+                new Claim("username", u.UserName)
+        };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            await HttpContext.SignInAsync(claimsPrincipal);
+
+            if (returnUrl == null) return RedirectToAction("Index", "Home");
+
+            return Redirect(returnUrl);
+
+        }
+
+        [Authorize(Roles = "Admin,User")]
+        public IActionResult MyProfile()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return Redirect("/");
+        }
+
+
+
+        /*
+        
         public async Task<IActionResult> Index()
         {
               return _context.User != null ? 
@@ -48,29 +134,7 @@ namespace E_Bank_FinalProject.Controllers
 
             return View(user);
         }
-
-        // GET: Users/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserID,UserName,FirstName,LastName,Email,Password,ConfirmedPassword")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
+      
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -163,57 +227,8 @@ namespace E_Bank_FinalProject.Controllers
         {
           return (_context.User?.Any(e => e.UserID == id)).GetValueOrDefault();
         }
+        */
 
-        [HttpGet("denied")]
-        public IActionResult Denied()
-        {
-            return View();
-        }
-        [HttpGet("login")]
-        public IActionResult Login(string returnUrl)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Validate(string email, string password, string returnUrl)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            var user = _context.User.Where(u => email == u.Email && password == u.Password);
-
-          
-            if (!user.Any())
-            {
-                return View("login");
-            }
-            var u = user.First();
-            var role = _context.UserRoles.Where(ur => ur.User == u).Include(ur=>ur.Role);
-            var r = role.First().Role;
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Name, u.FirstName));
-            claims.Add(new Claim(ClaimTypes.Surname, u.LastName));
-            claims.Add(new Claim(ClaimTypes.Email, u.Email));         
-            claims.Add(new Claim(ClaimTypes.Role,r.Name ));
-            claims.Add(new Claim("username", u.UserName));
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            await HttpContext.SignInAsync(claimsPrincipal);
-            return Redirect(returnUrl);
-        
-        }
-
-        [Authorize(Roles = "Admin,User")]
-        public IActionResult MyProfile()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            return Redirect("/");
-        }
 
     }
 }
