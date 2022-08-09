@@ -35,6 +35,8 @@ namespace E_Bank_FinalProject.Controllers
             if (ModelState.IsValid)
             {
                 UserRoles userRoles = new UserRoles();
+                user.Password=PasswordManager.Encode(user.Password);
+                user.ConfirmedPassword = PasswordManager.Encode(user.ConfirmedPassword);
                 userRoles.User = user;
                 var role = _context.Role.Where(r =>
                     r.Name == "User"
@@ -66,7 +68,7 @@ namespace E_Bank_FinalProject.Controllers
         {
 
             ViewData["ReturnUrl"] = returnUrl;
-            var u = _context.User.Where(u => email == u.Email && password == u.Password).First();
+            var u = _context.User.Where(u => email == u.Email && PasswordManager.Encode(password) == u.Password).First();
 
 
             if (u == null)
@@ -81,7 +83,11 @@ namespace E_Bank_FinalProject.Controllers
                 new Claim(ClaimTypes.Surname, u.LastName),
                 new Claim(ClaimTypes.Email, u.Email),
                 new Claim(ClaimTypes.Role, r.Name),
-                new Claim("username", u.UserName)
+                new Claim("username", u.UserName),
+                new Claim("password", u.Password),
+                 new Claim("confirmedpassword", u.ConfirmedPassword)
+        
+
         };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
