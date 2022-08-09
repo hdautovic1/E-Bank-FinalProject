@@ -25,8 +25,12 @@ namespace E_Bank_FinalProject.Controllers
         public IActionResult Privacy()
         {
             return View();
-        }      
-        
+        }
+        public IActionResult ATM()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
