@@ -21,10 +21,13 @@ namespace E_Bank_FinalProject.Data
             modelBuilder.Entity<E_Bank_FinalProject.Models.User>().ToTable("User");
             modelBuilder.Entity<E_Bank_FinalProject.Models.UserRoles>().ToTable("UserRoles");
             modelBuilder.Entity<E_Bank_FinalProject.Models.Role>().ToTable("Role");
+            modelBuilder.Entity<E_Bank_FinalProject.Models.Account>().ToTable("Account");
+
         }
 
         public DbSet<E_Bank_FinalProject.Models.Role>? Role { get; set; }
-
         public DbSet<E_Bank_FinalProject.Models.UserRoles>? UserRoles { get; set; }
+        public DbSet<E_Bank_FinalProject.Models.Account>? Account { get; set; }
+
     }
 }

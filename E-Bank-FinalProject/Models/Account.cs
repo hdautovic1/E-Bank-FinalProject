@@ -11,8 +11,9 @@ namespace E_Bank_FinalProject.Models
         [StringLength(100)]
         public string AccountName { get; set; }  
         [Required]
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime DateCreated { get; set; }
+        [StringLength(250)]
         public string AccountDescription { get; set; }
 
         [Required]
