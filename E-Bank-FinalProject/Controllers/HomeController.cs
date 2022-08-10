@@ -21,11 +21,6 @@ namespace E_Bank_FinalProject.Controllers
         {
             return View();
         }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
         public IActionResult ATM()
         {
             return View();

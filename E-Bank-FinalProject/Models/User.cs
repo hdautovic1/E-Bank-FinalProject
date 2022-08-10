@@ -37,6 +37,6 @@ namespace E_Bank_FinalProject.Models
 
         [Display(Name = "password")]
         public string ConfirmedPassword { get; set; }
-
-        }
+        public ICollection<Account> Accounts { get; set; }
+    }
 }

@@ -84,9 +84,7 @@ namespace E_Bank_FinalProject.Controllers
                 new Claim(ClaimTypes.Email, u.Email),
                 new Claim(ClaimTypes.Role, r.Name),
                 new Claim("username", u.UserName),
-                new Claim("password", u.Password),
-                 new Claim("confirmedpassword", u.ConfirmedPassword)
-        
+          
 
         };
 

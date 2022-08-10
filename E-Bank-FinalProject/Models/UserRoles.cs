@@ -14,12 +14,14 @@ namespace E_Bank_FinalProject.Models
         [ForeignKey("User")]
         public int UserID { get; set; }
        
+        [Required]
         public User User { get; set; }
  
         [ForeignKey("Role")]
       
         public int RoleID { get; set; }
-     
+
+        [Required]
         public Role Role { get; set; }
 
    
