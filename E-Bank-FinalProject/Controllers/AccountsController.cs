@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using E_Bank_FinalProject.Data;
 using E_Bank_FinalProject.Models;
+using System.Security.Claims;
 
 namespace E_Bank_FinalProject.Controllers
 {
@@ -31,10 +32,12 @@ namespace E_Bank_FinalProject.Controllers
         
 
         // GET: Accounts/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-    
-            ViewData["UserID"] = new SelectList(_context.User, "UserID", "UserID");
+            string email = User.FindFirstValue(ClaimTypes.Email);
+            User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+
+            ViewData["UserID"] = new SelectList(_context.User, "UserID", "UserID", user.UserID);
             return View();
         }
 
@@ -46,14 +49,12 @@ namespace E_Bank_FinalProject.Controllers
         public async Task<IActionResult> Create([Bind("AccountID,AccountName,DateCreated,AccountDescription,UserID")] Account account)
         {
            
-                var u = _context.User.Where(u => account.UserID == u.UserID).First();
-                account.User = u;
-                _context.Add(account);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            var u = _context.User.Where(u => account.UserID == u.UserID).First();
+            account.User = u;
+            _context.Add(account);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
             
-            ViewData["UserID"] = new SelectList(_context.User, "UserID", "UserID", account.UserID);
-            return View(account);
         }
 
         // GET: Accounts/Edit/5

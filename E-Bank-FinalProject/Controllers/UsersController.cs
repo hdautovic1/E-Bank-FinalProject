@@ -79,7 +79,7 @@ namespace E_Bank_FinalProject.Controllers
 
             var claims = new List<Claim>()
             {             
-                new Claim(ClaimTypes.Name, u.FirstName),
+                new Claim(ClaimTypes.Name, u.FirstName),                
                 new Claim(ClaimTypes.Surname, u.LastName),
                 new Claim(ClaimTypes.Email, u.Email),
                 new Claim(ClaimTypes.Role, r.Name),
@@ -99,9 +99,11 @@ namespace E_Bank_FinalProject.Controllers
         }
 
         [Authorize(Roles = "Admin,User")]
-        public IActionResult MyProfile()
+        public async Task<IActionResult> MyProfile()
         {
-            return View();
+            string email = this.User.FindFirstValue(ClaimTypes.Email);
+            User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+            return View(user);
         }
 
         public async Task<IActionResult> Logout()

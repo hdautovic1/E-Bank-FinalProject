@@ -1,16 +1,59 @@
-﻿@{
-    ViewData["Title"] = "My profile page";
-}
+﻿@model E_Bank_FinalProject.Models.User
 
-<div class="text-center">
-    <h1 class="display-4">Welcome @User.Identity.Name</h1>
-    <ul>
-        @foreach(var c in User.Claims)
-        {
-            <li>@c.Type: @c.Value </li>
-        }
-    </ul>
-     
-    <a class="nav-item nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Index">Accounts</a>
-                
+@{
+    ViewData["Title"] = "My profile";
+}
+<link rel="stylesheet" href="~/css/side.css" asp-append-version="true" />
+
+<div class="wrapper">
+    <nav id="sidebar" class="px-3">
+        <ul class="list-unstyled components">
+           
+            <li>
+                <a asp-controller="Users" asp-action="MyProfile">My profile</a>                        
+            </li>
+             <li>
+                <a asp-controller="Accounts" asp-action="Index">Accounts</a>                        
+            </li>
+        </ul>       
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="bg-light px-4">
+    
+
+<h3 class="pt-3">My profile:</h3>
+
+<div>
+   <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+       
+    </dl>
+</div>
+
+</div>
 </div>

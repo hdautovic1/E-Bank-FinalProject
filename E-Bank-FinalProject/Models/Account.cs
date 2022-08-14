@@ -10,15 +10,19 @@ namespace E_Bank_FinalProject.Models
 
         [Required]
         [StringLength(100)]
+        [Display(Name = "Account name:")]
         public string AccountName { get; set; } 
         
         [Required]
         [DataType(DataType.Date)]
+        [Display(Name = "Date created:")]
         public DateTime DateCreated { get; set; }
         
         [StringLength(250)]
+        [Display(Name = "Account description:")]
         public string AccountDescription { get; set; }
 
+        [Required]
         public User User { get; set; }
         
         [ForeignKey("User")]
