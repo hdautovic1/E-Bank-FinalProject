@@ -78,7 +78,7 @@ namespace E_Bank_FinalProject.Controllers
             var r = _context.UserRoles.Where(ur => ur.User == u).Include(ur => ur.Role).First().Role;
 
             var claims = new List<Claim>()
-            {
+            {             
                 new Claim(ClaimTypes.Name, u.FirstName),
                 new Claim(ClaimTypes.Surname, u.LastName),
                 new Claim(ClaimTypes.Email, u.Email),
