@@ -112,6 +112,34 @@ namespace E_Bank_FinalProject.Controllers
             return Redirect("/");
         }
 
+        [HttpGet("ChangePassword")]
+        public async Task<IActionResult> ChangePassword()
+        {
+            string email = User.FindFirstValue(ClaimTypes.Email);
+            User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null) { 
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> ChangePassword(string oldPassword,string newPassword,string confirmedPassword)
+        {
+                string email = User.FindFirstValue(ClaimTypes.Email);
+                User u2 = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+                if (u2.Password != PasswordManager.Encode(oldPassword) || newPassword!=confirmedPassword){
+                    return RedirectToAction(nameof(ChangePassword));
+                }
+                u2.Password = PasswordManager.Encode(newPassword);
+                u2.ConfirmedPassword = PasswordManager.Encode(confirmedPassword);
+                _context.Update(u2);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(MyProfile));
+        }
+
+
 
 
         /*
@@ -142,56 +170,7 @@ namespace E_Bank_FinalProject.Controllers
         }
       
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.User == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
-
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserID,UserName,FirstName,LastName,Email,Password,ConfirmedPassword")] User user)
-        {
-            if (id != user.UserID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.UserID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
+       
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
