@@ -42,7 +42,7 @@ namespace E_Bank_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddAccount([Bind("AccountName,AccountNumber,AccountDescription")] Account account)
+        public async Task<IActionResult> AddAccount([Bind("AccountName,AccountNumber,AccountDescription,Balance")] Account account)
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
             User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
@@ -56,6 +56,7 @@ namespace E_Bank_FinalProject.Controllers
             return RedirectToAction(nameof(Index));
             
         }
+        /*
 
         // GET: Accounts/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -152,5 +153,6 @@ namespace E_Bank_FinalProject.Controllers
         {
           return (_context.Account?.Any(e => e.AccountID == id)).GetValueOrDefault();
         }
+        */
     }
 }
