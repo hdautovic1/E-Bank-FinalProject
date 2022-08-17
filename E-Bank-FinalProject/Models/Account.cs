@@ -28,6 +28,9 @@ namespace E_Bank_FinalProject.Models
         public string AccountDescription { get; set; }
 
         [Required]
+        public double Balance { get; set; }
+
+        [Required]
         public User User { get; set; }
         
         [ForeignKey("User")]

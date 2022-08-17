@@ -34,10 +34,6 @@ namespace E_Bank_FinalProject.Controllers
         // GET: Accounts/Create
         public async Task<IActionResult> AddAccount()
         {
-            string email = User.FindFirstValue(ClaimTypes.Email);
-            User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
-
-            ViewData["UserID"] = new SelectList(_context.User, "UserID", "UserID", user.UserID);
             return View();
         }
 
@@ -46,7 +42,7 @@ namespace E_Bank_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddAccount([Bind("AccountID,AccountName,AccountDescription")] Account account)
+        public async Task<IActionResult> AddAccount([Bind("AccountName,AccountNumber,AccountDescription")] Account account)
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
             User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);

@@ -1,7 +1,5 @@
 ﻿@{
     ViewData["Title"] = "Login";
-    var returnUrl = ViewData["ReturnUrl"] as string;
-    var error = TempData["Error"] as string;
 }
 
 
@@ -16,7 +14,7 @@
     
     <div class="col-6">
         
-     <form action="/login?ReturnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
+     <form action="/login" method="post">
         <div class="row justify-content-center">
        <hr />
          <div class="form-group">

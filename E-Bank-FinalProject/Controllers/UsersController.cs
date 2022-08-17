@@ -57,27 +57,26 @@ namespace E_Bank_FinalProject.Controllers
             return View();
         }
         [HttpGet("login")]
-        public IActionResult Login(string returnUrl)
+        public IActionResult Login()
         {
-            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Validate(string email, string password, string returnUrl)
+        public async Task<IActionResult> Validate(string email, string password)
         {
+            User u;
+            Role r;
 
-            ViewData["ReturnUrl"] = returnUrl;
-            var u = _context.User.Where(u => email == u.Email && PasswordManager.Encode(password) == u.Password).First();
-
-
-            if (u == null)
-            {
+            try {
+                 u = _context.User.Where(u => email == u.Email && PasswordManager.Encode(password) == u.Password).First();
+                 r = _context.UserRoles.Where(ur => ur.User == u).Include(ur => ur.Role).First().Role;
+            }
+            catch (Exception) {
                 return View("login");
             }
-            var r = _context.UserRoles.Where(ur => ur.User == u).Include(ur => ur.Role).First().Role;
-
-            var claims = new List<Claim>()
+   
+              var claims = new List<Claim>()
             {             
                 new Claim(ClaimTypes.Name, u.FirstName),                
                 new Claim(ClaimTypes.Surname, u.LastName),
@@ -92,10 +91,7 @@ namespace E_Bank_FinalProject.Controllers
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             await HttpContext.SignInAsync(claimsPrincipal);
 
-            if (returnUrl == null) return RedirectToAction("Index", "Home");
-
-            return Redirect(returnUrl);
-
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize(Roles = "Admin,User")]
@@ -106,11 +102,15 @@ namespace E_Bank_FinalProject.Controllers
             return View(user);
         }
 
+        [Authorize(Roles = "Admin,User")]
+
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
             return Redirect("/");
         }
+
+        [Authorize(Roles = "Admin,User")]
 
         [HttpGet("ChangePassword")]
         public async Task<IActionResult> ChangePassword()
@@ -124,7 +124,9 @@ namespace E_Bank_FinalProject.Controllers
             return View(user);
         }
 
-        [HttpPost("changepassword")]
+        [Authorize(Roles = "Admin,User")]
+
+        [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword(string oldPassword,string newPassword,string confirmedPassword)
         {
                 string email = User.FindFirstValue(ClaimTypes.Email);
