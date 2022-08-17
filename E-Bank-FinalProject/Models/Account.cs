@@ -9,10 +9,15 @@ namespace E_Bank_FinalProject.Models
         public int AccountID { get; set; }
 
         [Required]
+        [StringLength(12)]
+        [Display(Name = "Account number:")]
+        public string AccountNumber { get; set; }
+
+        [Required]
         [StringLength(100)]
         [Display(Name = "Account name:")]
-        public string AccountName { get; set; } 
-        
+        public string AccountName { get; set; }
+
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Date created:")]
