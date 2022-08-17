@@ -23,6 +23,7 @@ namespace E_Bank_FinalProject.Data
             modelBuilder.Entity<E_Bank_FinalProject.Models.Role>().ToTable("Role");
             modelBuilder.Entity<E_Bank_FinalProject.Models.Account>().ToTable("Account");
             modelBuilder.Entity<E_Bank_FinalProject.Models.CreditCard>().ToTable("CreditCard");
+            modelBuilder.Entity<E_Bank_FinalProject.Models.Transaction>().ToTable("Transaction");
 
         }
 
@@ -30,6 +31,7 @@ namespace E_Bank_FinalProject.Data
         public DbSet<E_Bank_FinalProject.Models.UserRoles>? UserRoles { get; set; }
         public DbSet<E_Bank_FinalProject.Models.Account>? Account { get; set; }
         public DbSet<E_Bank_FinalProject.Models.CreditCard>? CreditCard { get; set; }
+        public DbSet<E_Bank_FinalProject.Models.Transaction>? Transactions{ get; set; }
 
     }
 }
