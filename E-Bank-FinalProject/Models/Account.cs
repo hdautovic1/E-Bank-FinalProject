@@ -35,5 +35,7 @@ namespace E_Bank_FinalProject.Models
         
         [ForeignKey("User")]
         public int UserID { get; set; }
+
+        public ICollection<CreditCard> CreditCards{ get; set; }
     }
 }

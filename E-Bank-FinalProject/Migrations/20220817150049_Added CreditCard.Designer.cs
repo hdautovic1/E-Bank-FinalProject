@@ -3,6 +3,7 @@ using System;
 using E_Bank_FinalProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Bank_FinalProject.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220817150049_Added CreditCard")]
+    partial class AddedCreditCard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,27 +56,6 @@ namespace E_Bank_FinalProject.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Account", (string)null);
-                });
-
-            modelBuilder.Entity("E_Bank_FinalProject.Models.CreditCard", b =>
-                {
-                    b.Property<int>("CreditCardID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("AccountID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreditCardName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("CreditCardID");
-
-                    b.HasIndex("AccountID");
-
-                    b.ToTable("CreditCard", (string)null);
                 });
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.Role", b =>
@@ -171,17 +152,6 @@ namespace E_Bank_FinalProject.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("E_Bank_FinalProject.Models.CreditCard", b =>
-                {
-                    b.HasOne("E_Bank_FinalProject.Models.Account", "Account")
-                        .WithMany("CreditCards")
-                        .HasForeignKey("AccountID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("E_Bank_FinalProject.Models.UserRoles", b =>
                 {
                     b.HasOne("E_Bank_FinalProject.Models.Role", "Role")
@@ -199,11 +169,6 @@ namespace E_Bank_FinalProject.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("E_Bank_FinalProject.Models.Account", b =>
-                {
-                    b.Navigation("CreditCards");
                 });
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.User", b =>
