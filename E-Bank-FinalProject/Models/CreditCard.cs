@@ -10,14 +10,19 @@ namespace E_Bank_FinalProject.Models
 
         [Required]
         [StringLength(50)]
+        [Display(Name ="Credit card name")]
         public string CreditCardName { get; set; }  
             
       
         [ForeignKey("Account")]
+        
         public int AccountID { get; set; }
 
+        
         [Required]
         public Account Account { get; set; }
+
+        public ICollection<Transaction> Transactions{ get; set; }
 
 
     }

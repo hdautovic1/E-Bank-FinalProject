@@ -46,9 +46,10 @@ namespace E_Bank_FinalProject.Controllers
         }
 
         // GET: CreditCards/Create
-        public IActionResult Create()
+        public IActionResult AddCreditCard(int? id)
         {
-            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName");
+         
+            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName",id);
             return View();
         }
 
@@ -57,16 +58,15 @@ namespace E_Bank_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CreditCardID,CreditCardName,AccountID")] CreditCard creditCard)
+        public async Task<IActionResult> AddCreditCard([Bind("CreditCardID,CreditCardName,AccountID")] CreditCard creditCard)
         {
-            if (ModelState.IsValid)
-            {
+            var account = _context.Account.Where(a=>a.AccountID==creditCard.AccountID).FirstOrDefault();
+            creditCard.Account = account;
+        
                 _context.Add(creditCard);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName", creditCard.AccountID);
-            return View(creditCard);
+                return RedirectToAction(nameof(Index));           
+           
         }
 
         // GET: CreditCards/Edit/5

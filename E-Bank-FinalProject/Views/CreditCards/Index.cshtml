@@ -4,11 +4,29 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<link rel="stylesheet" href="~/css/side.css" asp-append-version="true" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="wrapper">
+    <nav id="sidebar" class="px-3">
+        <ul class="list-unstyled components">
+            <li>
+                <a asp-controller="Users" asp-action="MyProfile">My profile</a>                        
+            </li>
+             <li>
+                <a asp-controller="Accounts" asp-action="Index">Accounts</a>                        
+            </li>
+              <li>
+                <a asp-controller="CreditCards" asp-action="Index">Credit cards</a>                        
+            </li>
+        </ul>       
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="bg-light px-4">
+    
+
+<h3 class="pt-3">Credit cards:</h3>
+<hr />
 <table class="table">
     <thead>
         <tr>
@@ -39,3 +57,4 @@
 }
     </tbody>
 </table>
+</div>

@@ -37,5 +37,6 @@ namespace E_Bank_FinalProject.Models
         public int UserID { get; set; }
 
         public ICollection<CreditCard> CreditCards{ get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }

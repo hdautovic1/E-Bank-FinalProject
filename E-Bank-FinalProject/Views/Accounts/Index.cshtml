@@ -14,6 +14,9 @@
              <li>
                 <a asp-controller="Accounts" asp-action="Index">Accounts</a>                        
             </li>
+                          <li>
+                <a asp-controller="CreditCards" asp-action="Index">Credit cards</a>                        
+            </li>
         </ul>       
     </nav>
 
@@ -40,6 +43,9 @@
              <th>
                 @Html.DisplayNameFor(model => model.Balance)
             </th>
+            <th>
+                
+            </th>
            
         </tr>
     </thead>
@@ -61,6 +67,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Balance)
             </td>
+            <td> 
+           <a asp-controller="CreditCards" asp-action="AddCreditCard" asp-route-id="@item.AccountID">Add credit card</a>
+           </td>
           
         </tr>
     }
