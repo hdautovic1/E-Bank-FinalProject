@@ -34,6 +34,9 @@
                 @Html.DisplayNameFor(model => model.CreditCardName)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.CreditCardNumber)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Account)
             </th>
             <th></th>
@@ -46,10 +49,12 @@
                 @Html.DisplayFor(modelItem => item.CreditCardName)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.CreditCardNumber)
+            </td>
+             <td>
                 @Html.DisplayFor(modelItem => item.Account.AccountName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.CreditCardID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.CreditCardID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.CreditCardID">Delete</a>
             </td>

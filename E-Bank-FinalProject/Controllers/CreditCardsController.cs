@@ -22,7 +22,8 @@ namespace E_Bank_FinalProject.Controllers
         // GET: CreditCards
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.CreditCard.Include(c => c.Account);
+            var dataContext = _context.CreditCard.Include(c => c.Account).Include(c=>c.Account)
+                .Where(u => u.Account.User.FirstName == User.Identity.Name); ;
             return View(await dataContext.ToListAsync());
         }
 
@@ -58,7 +59,7 @@ namespace E_Bank_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddCreditCard([Bind("CreditCardID,CreditCardName,AccountID")] CreditCard creditCard)
+        public async Task<IActionResult> AddCreditCard([Bind("CreditCardID,CreditCardName,CreditCardNumber,AccountID")] CreditCard creditCard)
         {
             var account = _context.Account.Where(a=>a.AccountID==creditCard.AccountID).FirstOrDefault();
             creditCard.Account = account;

@@ -56,6 +56,45 @@ namespace E_Bank_FinalProject.Controllers
             return RedirectToAction(nameof(Index));
             
         }
+        // GET: Accounts/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || _context.Account == null)
+            {
+                return NotFound();
+            }
+
+            var account = await _context.Account
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(m => m.AccountID == id);
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            return View(account);
+        }
+
+        // POST: Accounts/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.Account == null)
+            {
+                return Problem("Entity set 'DataContext.Account'  is null.");
+            }
+            var account = await _context.Account.FindAsync(id);
+            if (account != null)
+            {
+                _context.Account.Remove(account);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
         /*
 
         // GET: Accounts/Edit/5
@@ -111,44 +150,7 @@ namespace E_Bank_FinalProject.Controllers
             return View(account);
         }
 
-        // GET: Accounts/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Account == null)
-            {
-                return NotFound();
-            }
-
-            var account = await _context.Account
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.AccountID == id);
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            return View(account);
-        }
-
-        // POST: Accounts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Account == null)
-            {
-                return Problem("Entity set 'DataContext.Account'  is null.");
-            }
-            var account = await _context.Account.FindAsync(id);
-            if (account != null)
-            {
-                _context.Account.Remove(account);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
+       
         private bool AccountExists(int id)
         {
           return (_context.Account?.Any(e => e.AccountID == id)).GetValueOrDefault();

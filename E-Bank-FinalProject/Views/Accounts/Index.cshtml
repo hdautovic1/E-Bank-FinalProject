@@ -43,9 +43,8 @@
              <th>
                 @Html.DisplayNameFor(model => model.Balance)
             </th>
-            <th>
-                
-            </th>
+            <th></th>
+            <th></th>
            
         </tr>
     </thead>
@@ -69,7 +68,9 @@
             </td>
             <td> 
            <a asp-controller="CreditCards" asp-action="AddCreditCard" asp-route-id="@item.AccountID">Add credit card</a>
-           </td>
+           <a asp-action="Delete" asp-route-id="@item.AccountID">Delete</a> |
+           
+       </td>
           
         </tr>
     }
