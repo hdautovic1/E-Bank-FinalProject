@@ -49,8 +49,17 @@ namespace E_Bank_FinalProject.Controllers
         // GET: CreditCards/Create
         public IActionResult AddCreditCard(int? id)
         {
-         
-            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName",id);
+            if (id == null) {
+                var selectListItems = _context.Account.Where(a => a.User.FirstName == User.Identity.Name);
+                ViewData["AccountID"] = new SelectList(selectListItems, "AccountID", "AccountName", id);
+            }
+            else
+            {
+                var selectListItems = _context.Account.Where(a => a.User.FirstName == User.Identity.Name)   
+                                                      .Where(a=> a.AccountID==id);
+                ViewData["AccountID"] = new SelectList(selectListItems, "AccountID", "AccountName", id);
+
+            }
             return View();
         }
 
