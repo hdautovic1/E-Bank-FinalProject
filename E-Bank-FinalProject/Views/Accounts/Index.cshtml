@@ -9,78 +9,73 @@
     <nav id="sidebar" class="px-3">
         <ul class="list-unstyled components">
             <li>
-                <a asp-controller="Users" asp-action="MyProfile">My profile</a>                        
+                <a asp-controller="Users" asp-action="MyProfile">My profile</a>
             </li>
-             <li>
-                <a asp-controller="Accounts" asp-action="Index">Accounts</a>                        
+            <li>
+                <a asp-controller="Accounts" asp-action="Index">Accounts</a>
             </li>
-                          <li>
-                <a asp-controller="CreditCards" asp-action="Index">Credit cards</a>                        
+            <li>
+                <a asp-controller="CreditCards" asp-action="Index">Credit cards</a>
             </li>
-        </ul>       
+        </ul>
     </nav>
-
     <!-- Page Content  -->
     <div id="content" class="bg-light px-4">
-
-    <h3 class="pt-3">Accounts:</h3>
-    <hr />
-    <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountName)
-            </th>
-               <th>
-                @Html.DisplayNameFor(model => model.AccountNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountDescription)
-            </th>
-             <th>
-                @Html.DisplayNameFor(model => model.Balance)
-            </th>
-            <th></th>
-            <th></th>
-           
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Balance)
-            </td>
-             <td>
-           <a style="color:#0d6efd" asp-action="Delete" asp-route-id="@item.AccountID">Remove account</a>
-           
-       </td>
-            <td> 
-           <a style="color:#0d6efd" asp-controller="CreditCards" asp-action="AddCreditCard" asp-route-id="@item.AccountID">Add credit card</a> 
-        </td>
-       
-          
-        </tr>
-    }
-    </tbody>
-    </table>
-      <li>
-          <a asp-controller="Accounts" asp-action="AddAccount">Add new account</a>                        
-      </li>
+        <h3 class="pt-3">Accounts:</h3>
+        <hr />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateCreated)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountDescription)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Balance)
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccountName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccountNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateCreated)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccountDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Balance)
+                        </td>
+                        <td>
+                            <a style="color:#0d6efd" asp-action="Delete" asp-route-id="@item.AccountID">Remove account</a>
+                        </td>
+                        <td>
+                            <a style="color:#0d6efd" asp-controller="CreditCards" asp-action="AddCreditCard" asp-route-id="@item.AccountID">Add credit card</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <li>
+            <a asp-controller="Accounts" asp-action="AddAccount">Add new account</a>
+        </li>
     </div>
 </div>

@@ -10,59 +10,58 @@
     <nav id="sidebar" class="px-3">
         <ul class="list-unstyled components">
             <li>
-                <a asp-controller="Users" asp-action="MyProfile">My profile</a>                        
+                <a asp-controller="Users" asp-action="MyProfile">My profile</a>
             </li>
-             <li>
-                <a asp-controller="Accounts" asp-action="Index">Accounts</a>                        
+            <li>
+                <a asp-controller="Accounts" asp-action="Index">Accounts</a>
             </li>
-              <li>
-                <a asp-controller="CreditCards" asp-action="Index">Credit cards</a>                        
+            <li>
+                <a asp-controller="CreditCards" asp-action="Index">Credit cards</a>
             </li>
-        </ul>       
+        </ul>
     </nav>
-
     <!-- Page Content  -->
     <div id="content" class="bg-light px-4">
-    
+        <h3 class="pt-3">Credit cards:</h3>
+        <hr />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CreditCardName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CreditCardNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Account)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreditCardName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreditCardNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Account.AccountName)
+                        </td>
+                        <td>
+                            <a style="color:#0d6efd" asp-action="Delete" asp-route-id="@item.CreditCardID">Remove card</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <li>
+            <a asp-controller="CreditCards" asp-action="AddCreditCard">Add new credit card</a>
+        </li>
 
-<h3 class="pt-3">Credit cards:</h3>
-<hr />
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CreditCardName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreditCardNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Account)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreditCardName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreditCardNumber)
-            </td>
-             <td>
-                @Html.DisplayFor(modelItem => item.Account.AccountName)
-            </td>
-              <td>
-                <a style="color:#0d6efd" asp-action="Delete" asp-route-id="@item.CreditCardID">Remove card</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-  <li>
-          <a asp-controller="CreditCards" asp-action="AddCreditCard">Add new credit card</a>                        
-      </li>
-  
+    </div>
 </div>
