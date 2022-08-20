@@ -104,13 +104,12 @@ namespace E_Bank_FinalProject.Controllers
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> MyProfile()
         {
-            string email = this.User.FindFirstValue(ClaimTypes.Email);
+            string email = User.FindFirstValue(ClaimTypes.Email);
             User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
             return View(user);
         }
 
         [Authorize(Roles = "Admin,User")]
-
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
@@ -121,30 +120,28 @@ namespace E_Bank_FinalProject.Controllers
         [HttpGet("ChangePassword")]
         public async Task<IActionResult> ChangePassword()
         {
-            string email = User.FindFirstValue(ClaimTypes.Email);
-            User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
-
-            if (user == null) { 
-                return NotFound();
-            }
-
-            return View(user);
+            return View();
         }
 
         [Authorize(Roles = "Admin,User")]
         [HttpPost("ChangePassword")]
-        public async Task<IActionResult> ChangePassword(string oldPassword,string newPassword,string confirmedPassword)
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
         {
+            if (ModelState.IsValid)
+            {
                 string email = User.FindFirstValue(ClaimTypes.Email);
-                User u2 = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
-                if (u2.Password != PasswordManager.Encode(oldPassword) || newPassword!=confirmedPassword){
-                    return RedirectToAction(nameof(ChangePassword));
+                User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+                if (user == null)
+                {
+                    RedirectToAction("Login");
                 }
-                u2.Password = PasswordManager.Encode(newPassword);
-                u2.ConfirmedPassword = PasswordManager.Encode(confirmedPassword);
-                _context.Update(u2);
+                user.Password = PasswordManager.Encode(model.NewPassword);
+                user.ConfirmedPassword = PasswordManager.Encode(model.ConfirmNewPassword);
+                _context.Update(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(MyProfile));
+                return RedirectToAction("MyProfile");
+            }
+            return View(model);
         }
 
         [Authorize(Roles = "Admin")]
