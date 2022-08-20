@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace E_Bank_FinalProject.Models
@@ -17,12 +18,13 @@ namespace E_Bank_FinalProject.Models
         [Display(Name ="First name")]
         public string FirstName { get; set; }
 
-        [StringLength(50)]
-
+        [StringLength(50)]  
         [Display(Name = "Last name")]
         public string LastName { get; set; }
         
         [StringLength(100)]
+        [DataType(DataType.EmailAddress)]
+        [Remote(action:"IsEmailInUse",controller:"Users"),]
         public string Email { get; set; }
 
         
@@ -38,6 +40,5 @@ namespace E_Bank_FinalProject.Models
 
         [Display(Name = "password")]
         public string ConfirmedPassword { get; set; }
-        public ICollection<Account> Accounts { get; set; }
     }
 }

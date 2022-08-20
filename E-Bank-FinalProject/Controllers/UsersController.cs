@@ -28,70 +28,85 @@ namespace E_Bank_FinalProject.Controllers
             return View();
         }
 
+        [AcceptVerbs("Get","Post")]
+        public async Task<IActionResult> IsEmailInUse(string Email)
+        {
+            var user = await _context.User.Where(u => u.Email == Email).FirstOrDefaultAsync();
+            if (user == null) return Json(true);
+            return Json($"Email {Email} is already in use!");
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([Bind("UserID,UserName,FirstName,LastName,Email,Password,ConfirmedPassword")] User user)
         {
             if (ModelState.IsValid)
             {
-                UserRoles userRoles = new UserRoles();
-                user.Password=PasswordManager.Encode(user.Password);
-                user.ConfirmedPassword = PasswordManager.Encode(user.ConfirmedPassword);
-                userRoles.User = user;
-                var role = _context.Role.Where(r =>
-                    r.Name == "User"
-                );
-                userRoles.Role = role.First();
-                _context.Add(user);
-                _context.UserRoles.Add(userRoles);
-                await _context.SaveChangesAsync();
-                return View("login");
+                
+                User u2 = await _context.User.FirstOrDefaultAsync(u => u.Email == user.Email);
+                if (u2 == null)
+                {
+
+                    UserRoles userRoles = new UserRoles();
+                    user.Password = PasswordManager.Encode(user.Password);
+                    user.ConfirmedPassword = PasswordManager.Encode(user.ConfirmedPassword);
+                    userRoles.User = user;
+                    var role = _context.Role.Where(r =>
+                        r.Name == "User"
+                    );
+                    userRoles.Role = role.First();
+                    _context.Add(user);
+                    _context.UserRoles.Add(userRoles);
+                    await _context.SaveChangesAsync();
+                    return View("login");
+                }
             }
             return View(user);
         }
 
 
-        [HttpGet("denied")]
-        public IActionResult Denied()
-        {
-            return View();
-        }
-        [HttpGet("login")]
+        [HttpGet("Login")]
         public IActionResult Login()
         {
             return View();
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Validate(string email, string password)
         {
-            User u;
-            Role r;
+            if (ModelState.IsValid)
+            {
+                User u;
+                Role r;
+                try
+                {
+                    u = _context.User.Where(u => email == u.Email && PasswordManager.Encode(password) == u.Password).First();
+                    r = _context.UserRoles.Where(ur => ur.User == u).Include(ur => ur.Role).First().Role;
+                }
+                catch (Exception)
+                {
+                    return View("login");
+                }
 
-            try {
-                 u = _context.User.Where(u => email == u.Email && PasswordManager.Encode(password) == u.Password).First();
-                 r = _context.UserRoles.Where(ur => ur.User == u).Include(ur => ur.Role).First().Role;
-            }
-            catch (Exception) {
-                return View("login");
-            }
-   
-              var claims = new List<Claim>()
-            {             
-                new Claim(ClaimTypes.Name, u.FirstName),                
+                var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, u.FirstName),
                 new Claim(ClaimTypes.Surname, u.LastName),
                 new Claim(ClaimTypes.Email, u.Email),
                 new Claim(ClaimTypes.Role, r.Name),
                 new Claim("username", u.UserName),
-          
+
 
         };
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            await HttpContext.SignInAsync(claimsPrincipal);
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                await HttpContext.SignInAsync(claimsPrincipal);
 
-            return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home");
+            }
+            return Redirect("Login");
         }
 
         [Authorize(Roles = "Admin,User")]
@@ -111,7 +126,6 @@ namespace E_Bank_FinalProject.Controllers
         }
 
         [Authorize(Roles = "Admin,User")]
-
         [HttpGet("ChangePassword")]
         public async Task<IActionResult> ChangePassword()
         {
@@ -125,7 +139,6 @@ namespace E_Bank_FinalProject.Controllers
         }
 
         [Authorize(Roles = "Admin,User")]
-
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword(string oldPassword,string newPassword,string confirmedPassword)
         {
@@ -141,11 +154,7 @@ namespace E_Bank_FinalProject.Controllers
                 return RedirectToAction(nameof(MyProfile));
         }
 
-
-
-
-        /*
-        
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
               return _context.User != null ? 
@@ -153,26 +162,8 @@ namespace E_Bank_FinalProject.Controllers
                           Problem("Entity set 'DataContext.User'  is null.");
         }
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.User == null)
-            {
-                return NotFound();
-            }
+        [Authorize(Roles = "Admin")]
 
-            var user = await _context.User
-                .FirstOrDefaultAsync(m => m.UserID == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-      
-        // GET: Users/Edit/5
-       
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -191,6 +182,7 @@ namespace E_Bank_FinalProject.Controllers
             return View(user);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -201,12 +193,20 @@ namespace E_Bank_FinalProject.Controllers
                 return Problem("Entity set 'DataContext.User'  is null.");
             }
             var user = await _context.User.FindAsync(id);
+            string email = this.User.FindFirstValue(ClaimTypes.Email);
+            var u2 = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+
             if (user != null)
             {
                 _context.User.Remove(user);
             }
             
             await _context.SaveChangesAsync();
+            if (user==u2)
+            {
+                await HttpContext.SignOutAsync();
+                return Redirect("/");
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -214,8 +214,7 @@ namespace E_Bank_FinalProject.Controllers
         {
           return (_context.User?.Any(e => e.UserID == id)).GetValueOrDefault();
         }
-        */
-
+        
 
     }
 }
