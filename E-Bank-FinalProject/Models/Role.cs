@@ -12,7 +12,6 @@ namespace E_Bank_FinalProject.Models
         
         [StringLength(255)]
         public string Description { get; set; }
-
-  
+       
     }
 }

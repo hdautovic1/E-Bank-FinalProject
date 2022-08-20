@@ -43,24 +43,18 @@ namespace E_Bank_FinalProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                User u2 = await _context.User.FirstOrDefaultAsync(u => u.Email == user.Email);
-                if (u2 == null)
-                {
-
-                    UserRoles userRoles = new UserRoles();
-                    user.Password = PasswordManager.Encode(user.Password);
-                    user.ConfirmedPassword = PasswordManager.Encode(user.ConfirmedPassword);
-                    userRoles.User = user;
-                    var role = _context.Role.Where(r =>
-                        r.Name == "User"
-                    );
-                    userRoles.Role = role.First();
-                    _context.Add(user);
-                    _context.UserRoles.Add(userRoles);
-                    await _context.SaveChangesAsync();
-                    return View("login");
-                }
+                UserRoles userRoles = new UserRoles();
+                user.Password = PasswordManager.Encode(user.Password);
+                user.ConfirmedPassword = PasswordManager.Encode(user.ConfirmedPassword);
+                userRoles.User = user;
+                var role = _context.Role.Where(r =>
+                    r.Name == "User"
+                );
+                userRoles.Role = role.First();
+                _context.Add(user);
+                _context.UserRoles.Add(userRoles);
+                await _context.SaveChangesAsync();
+                return View("login");                
             }
             return View(user);
         }
@@ -77,8 +71,8 @@ namespace E_Bank_FinalProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                User u;
-                Role r;
+                User u = new User();
+                Role r = new Role();
                 try
                 {
                     u = _context.User.Where(u => email == u.Email && PasswordManager.Encode(password) == u.Password).First();
@@ -90,15 +84,13 @@ namespace E_Bank_FinalProject.Controllers
                 }
 
                 var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.Name, u.FirstName),
-                new Claim(ClaimTypes.Surname, u.LastName),
-                new Claim(ClaimTypes.Email, u.Email),
-                new Claim(ClaimTypes.Role, r.Name),
-                new Claim("username", u.UserName),
-
-
-        };
+                {
+                    new Claim(ClaimTypes.Name, u.FirstName),
+                    new Claim(ClaimTypes.Surname, u.LastName),
+                    new Claim(ClaimTypes.Email, u.Email),
+                    new Claim(ClaimTypes.Role, r.Name),
+                    new Claim("username", u.UserName),
+                };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -135,6 +127,7 @@ namespace E_Bank_FinalProject.Controllers
             if (user == null) { 
                 return NotFound();
             }
+
             return View(user);
         }
 
