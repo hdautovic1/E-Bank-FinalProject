@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using E_Bank_FinalProject.Data;
+using E_Bank_FinalProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using E_Bank_FinalProject.Data;
-using E_Bank_FinalProject.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace E_Bank_FinalProject.Controllers
 {
@@ -23,7 +19,7 @@ namespace E_Bank_FinalProject.Controllers
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.CreditCard.Include(c => c.Account).Include(c=>c.Account)
+            var dataContext = _context.CreditCard.Include(c => c.Account).Include(c => c.Account)
                 .Where(u => u.Account.User.FirstName == User.Identity.Name); ;
             return View(await dataContext.ToListAsync());
         }
@@ -31,14 +27,15 @@ namespace E_Bank_FinalProject.Controllers
         [Authorize(Roles = "Admin,User")]
         public IActionResult AddCreditCard(int? id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 var selectListItems = _context.Account.Where(a => a.User.FirstName == User.Identity.Name);
                 ViewData["AccountID"] = new SelectList(selectListItems, "AccountID", "AccountName", id);
             }
             else
             {
-                var selectListItems = _context.Account.Where(a => a.User.FirstName == User.Identity.Name)   
-                                                      .Where(a=> a.AccountID==id);
+                var selectListItems = _context.Account.Where(a => a.User.FirstName == User.Identity.Name)
+                                                      .Where(a => a.AccountID == id);
                 ViewData["AccountID"] = new SelectList(selectListItems, "AccountID", "AccountName", id);
 
             }
@@ -50,13 +47,13 @@ namespace E_Bank_FinalProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCreditCard([Bind("CreditCardID,CreditCardName,CreditCardNumber,AccountID")] CreditCard creditCard)
         {
-            var account = _context.Account.Where(a=>a.AccountID==creditCard.AccountID).FirstOrDefault();
+            var account = _context.Account.Where(a => a.AccountID == creditCard.AccountID).FirstOrDefault();
             creditCard.Account = account;
-        
-                _context.Add(creditCard);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));           
-           
+
+            _context.Add(creditCard);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
         }
 
         [Authorize(Roles = "Admin,User")]
@@ -93,14 +90,9 @@ namespace E_Bank_FinalProject.Controllers
             {
                 _context.CreditCard.Remove(creditCard);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CreditCardExists(int id)
-        {
-          return (_context.CreditCard?.Any(e => e.CreditCardID == id)).GetValueOrDefault();
         }
     }
 }

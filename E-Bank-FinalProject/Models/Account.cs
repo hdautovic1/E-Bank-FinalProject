@@ -22,7 +22,7 @@ namespace E_Bank_FinalProject.Models
         [DataType(DataType.Date)]
         [Display(Name = "Date created:")]
         public DateTime DateCreated { get; set; }
-        
+
         [StringLength(250)]
         [Display(Name = "Account description:")]
         public string AccountDescription { get; set; }
@@ -32,11 +32,11 @@ namespace E_Bank_FinalProject.Models
 
         [Required]
         public User User { get; set; }
-        
+
         [ForeignKey("User")]
         public int UserID { get; set; }
 
-        public ICollection<CreditCard> CreditCards{ get; set; }
+        public ICollection<CreditCard> CreditCards { get; set; }
         public ICollection<Transaction> Transactions { get; set; }
     }
 }

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using E_Bank_FinalProject.Data;
+﻿using E_Bank_FinalProject.Data;
 using E_Bank_FinalProject.Models;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace E_Bank_FinalProject.Controllers
 {
@@ -21,22 +16,18 @@ namespace E_Bank_FinalProject.Controllers
         public UsersController(DataContext context)
         {
             _context = context;
-        }       
-
+        }
         public IActionResult Register()
         {
             return View();
         }
-
-        [AcceptVerbs("Get","Post")]
+        [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> IsEmailInUse(string Email)
         {
             var user = await _context.User.Where(u => u.Email == Email).FirstOrDefaultAsync();
             if (user == null) return Json(true);
             return Json($"Email {Email} is already in use!");
         }
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([Bind("UserID,UserName,FirstName,LastName,Email,Password,ConfirmedPassword")] User user)
@@ -54,18 +45,15 @@ namespace E_Bank_FinalProject.Controllers
                 _context.Add(user);
                 _context.UserRoles.Add(userRoles);
                 await _context.SaveChangesAsync();
-                return View("login");                
+                return View("login");
             }
             return View(user);
         }
-
-
         [HttpGet("Login")]
         public IActionResult Login()
         {
             return View();
         }
-
         [HttpPost("Login")]
         public async Task<IActionResult> Validate(string email, string password)
         {
@@ -100,7 +88,6 @@ namespace E_Bank_FinalProject.Controllers
             }
             return Redirect("Login");
         }
-
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> MyProfile()
         {
@@ -108,21 +95,18 @@ namespace E_Bank_FinalProject.Controllers
             User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
             return View(user);
         }
-
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
             return Redirect("/");
         }
-
         [Authorize(Roles = "Admin,User")]
         [HttpGet("ChangePassword")]
         public async Task<IActionResult> ChangePassword()
         {
             return View();
         }
-
         [Authorize(Roles = "Admin,User")]
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
@@ -143,18 +127,14 @@ namespace E_Bank_FinalProject.Controllers
             }
             return View(model);
         }
-
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-              return _context.User != null ? 
-                          View(await _context.User.ToListAsync()) :
-                          Problem("Entity set 'DataContext.User'  is null.");
+            return _context.User != null ?
+                        View(await _context.User.ToListAsync()) :
+                        Problem("Entity set 'DataContext.User'  is null.");
         }
-
         [Authorize(Roles = "Admin")]
-
-        // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.User == null)
@@ -171,9 +151,7 @@ namespace E_Bank_FinalProject.Controllers
 
             return View(user);
         }
-
         [Authorize(Roles = "Admin")]
-        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -190,21 +168,14 @@ namespace E_Bank_FinalProject.Controllers
             {
                 _context.User.Remove(user);
             }
-            
+
             await _context.SaveChangesAsync();
-            if (user==u2)
+            if (user == u2)
             {
                 await HttpContext.SignOutAsync();
                 return Redirect("/");
             }
             return RedirectToAction(nameof(Index));
         }
-
-        private bool UserExists(int id)
-        {
-          return (_context.User?.Any(e => e.UserID == id)).GetValueOrDefault();
-        }
-        
-
     }
 }

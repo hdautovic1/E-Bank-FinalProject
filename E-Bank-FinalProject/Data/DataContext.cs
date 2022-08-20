@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using E_Bank_FinalProject.Models;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace E_Bank_FinalProject.Data
 {
     public class DataContext : DbContext
     {
-        public DataContext (DbContextOptions<DataContext> options)
+        public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {
         }
@@ -31,7 +26,7 @@ namespace E_Bank_FinalProject.Data
         public DbSet<E_Bank_FinalProject.Models.UserRoles>? UserRoles { get; set; }
         public DbSet<E_Bank_FinalProject.Models.Account>? Account { get; set; }
         public DbSet<E_Bank_FinalProject.Models.CreditCard>? CreditCard { get; set; }
-        public DbSet<E_Bank_FinalProject.Models.Transaction>? Transactions{ get; set; }
+        public DbSet<E_Bank_FinalProject.Models.Transaction>? Transactions { get; set; }
 
     }
 }

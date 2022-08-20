@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using E_Bank_FinalProject.Data;
+﻿using E_Bank_FinalProject.Data;
 using E_Bank_FinalProject.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace E_Bank_FinalProject.Controllers
@@ -19,27 +14,18 @@ namespace E_Bank_FinalProject.Controllers
         {
             _context = context;
         }
-
-        // GET: Accounts
         public async Task<IActionResult> Index()
         {
             var dataContext = _context.Account.Include(a => a.User)
                 .Where(u => u.User.FirstName == User.Identity.Name);
-      
+
             return View(await dataContext.ToListAsync());
         }
-
-        
-
-        // GET: Accounts/Create
         public async Task<IActionResult> AddAccount()
         {
             return View();
         }
 
-        // POST: Accounts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddAccount([Bind("AccountName,AccountNumber,AccountDescription,Balance")] Account account)
@@ -54,9 +40,8 @@ namespace E_Bank_FinalProject.Controllers
             _context.Add(account);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-            
+
         }
-        // GET: Accounts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Account == null)
@@ -75,7 +60,6 @@ namespace E_Bank_FinalProject.Controllers
             return View(account);
         }
 
-        // POST: Accounts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -94,67 +78,5 @@ namespace E_Bank_FinalProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-        /*
-
-        // GET: Accounts/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Account == null)
-            {
-                return NotFound();
-            }
-
-            var account = await _context.Account.FindAsync(id);
-            if (account == null)
-            {
-                return NotFound();
-            }
-            ViewData["UserID"] = new SelectList(_context.User, "UserID", "UserID", account.UserID);
-            return View(account);
-        }
-
-        // POST: Accounts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AccountID,AccountName,DateCreated,AccountDescription,UserID")] Account account)
-        {
-            if (id != account.AccountID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(account);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AccountExists(account.AccountID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UserID"] = new SelectList(_context.User, "UserID", "UserID", account.UserID);
-            return View(account);
-        }
-
-       
-        private bool AccountExists(int id)
-        {
-          return (_context.Account?.Any(e => e.AccountID == id)).GetValueOrDefault();
-        }
-        */
     }
 }

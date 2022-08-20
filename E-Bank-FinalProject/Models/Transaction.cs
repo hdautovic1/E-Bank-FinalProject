@@ -12,10 +12,10 @@ namespace E_Bank_FinalProject.Models
         [DataType(DataType.Date)]
         [Display(Name = "Date created:")]
         public DateTime TransactionDate { get; set; }
-       
+
         [Required]
         public double Amount { get; set; }
-       
+
         [Required]
         public Account Account { get; set; }
 
