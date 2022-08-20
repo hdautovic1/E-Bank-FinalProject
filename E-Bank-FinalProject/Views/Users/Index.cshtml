@@ -3,6 +3,25 @@
 @{
     ViewData["Title"] = "Index";
 }
+<link rel="stylesheet" href="~/css/side.css" asp-append-version="true" />
+
+<div class="wrapper">
+    <nav id="sidebar" class="px-3">
+        <ul class="list-unstyled components">
+            <li>
+                <a asp-controller="Users" asp-action="Index">Users</a>                        
+            </li>
+             
+        </ul>       
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="bg-light px-4">
+    
+
+<h3 class="pt-3">Users:</h3>
+
+   <hr />
 
 
 <table class="table">
@@ -39,9 +58,10 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                <a asp-action="Delete" asp-route-id="@item.UserID">Remove user</a>
+                <a style="color:#0d6efd" asp-action="Delete" asp-route-id="@item.UserID">Remove user</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+</div>
