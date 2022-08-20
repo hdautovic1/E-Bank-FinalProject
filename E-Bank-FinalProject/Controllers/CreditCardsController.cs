@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using E_Bank_FinalProject.Data;
 using E_Bank_FinalProject.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace E_Bank_FinalProject.Controllers
 {
@@ -19,7 +20,7 @@ namespace E_Bank_FinalProject.Controllers
             _context = context;
         }
 
-        // GET: CreditCards
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Index()
         {
             var dataContext = _context.CreditCard.Include(c => c.Account).Include(c=>c.Account)
@@ -27,26 +28,7 @@ namespace E_Bank_FinalProject.Controllers
             return View(await dataContext.ToListAsync());
         }
 
-        // GET: CreditCards/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.CreditCard == null)
-            {
-                return NotFound();
-            }
-
-            var creditCard = await _context.CreditCard
-                .Include(c => c.Account)
-                .FirstOrDefaultAsync(m => m.CreditCardID == id);
-            if (creditCard == null)
-            {
-                return NotFound();
-            }
-
-            return View(creditCard);
-        }
-
-        // GET: CreditCards/Create
+        [Authorize(Roles = "Admin,User")]
         public IActionResult AddCreditCard(int? id)
         {
             if (id == null) {
@@ -63,9 +45,7 @@ namespace E_Bank_FinalProject.Controllers
             return View();
         }
 
-        // POST: CreditCards/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCreditCard([Bind("CreditCardID,CreditCardName,CreditCardNumber,AccountID")] CreditCard creditCard)
@@ -79,60 +59,7 @@ namespace E_Bank_FinalProject.Controllers
            
         }
 
-        // GET: CreditCards/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.CreditCard == null)
-            {
-                return NotFound();
-            }
-
-            var creditCard = await _context.CreditCard.FindAsync(id);
-            if (creditCard == null)
-            {
-                return NotFound();
-            }
-            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName", creditCard.AccountID);
-            return View(creditCard);
-        }
-
-        // POST: CreditCards/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CreditCardID,CreditCardName,AccountID")] CreditCard creditCard)
-        {
-            if (id != creditCard.CreditCardID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(creditCard);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CreditCardExists(creditCard.CreditCardID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName", creditCard.AccountID);
-            return View(creditCard);
-        }
-
-        // GET: CreditCards/Delete/5
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.CreditCard == null)
@@ -151,7 +78,8 @@ namespace E_Bank_FinalProject.Controllers
             return View(creditCard);
         }
 
-        // POST: CreditCards/Delete/5
+
+        [Authorize(Roles = "Admin,User")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
