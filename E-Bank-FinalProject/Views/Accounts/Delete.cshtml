@@ -1,7 +1,7 @@
 ﻿@model E_Bank_FinalProject.Models.Account
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete account";
 }
 
 <link rel="stylesheet" href="~/css/side.css" asp-append-version="true" />
@@ -49,10 +49,16 @@
             @Html.DisplayFor(model => model.AccountDescription)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
+            @Html.DisplayNameFor(model => model.User.FirstName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.UserID)
+            @Html.DisplayFor(model => model.User.FirstName)
+        </dd>
+         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.User.LastName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.User.LastName)
         </dd>
     </dl>
     <div class="row">
