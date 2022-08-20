@@ -49,13 +49,13 @@ namespace E_Bank_FinalProject.Controllers
             }
             return View(user);
         }
-        [HttpGet("Login")]
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-        [HttpPost("Login")]
-        public async Task<IActionResult> Validate(string email, string password)
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginModel model)
         {
             if (ModelState.IsValid)
             {
@@ -63,15 +63,22 @@ namespace E_Bank_FinalProject.Controllers
                 Role r = new Role();
                 try
                 {
-                    u = _context.User.Where(u => email == u.Email && PasswordManager.Encode(password) == u.Password).First();
+                    u = _context.User.Where(u => model.Email == u.Email && PasswordManager.Encode(model.Password) == u.Password).First();
                     r = _context.UserRoles.Where(ur => ur.User == u).Include(ur => ur.Role).First().Role;
                 }
                 catch (Exception)
                 {
-                    return View("login");
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                    return View(model);
                 }
 
-                var claims = new List<Claim>()
+                if (u == null || r == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                }
+                else
+                {
+                    var claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.Name, u.FirstName),
                     new Claim(ClaimTypes.Surname, u.LastName),
@@ -80,13 +87,14 @@ namespace E_Bank_FinalProject.Controllers
                     new Claim("username", u.UserName),
                 };
 
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.SignInAsync(claimsPrincipal);
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                    await HttpContext.SignInAsync(claimsPrincipal);
 
-                return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
+                }
             }
-            return Redirect("Login");
+            return View(model);
         }
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> MyProfile()
