@@ -127,6 +127,11 @@ namespace E_Bank_FinalProject.Controllers
                 {
                     RedirectToAction("Login");
                 }
+                if (PasswordManager.Encode(model.CurrentPassword) != user.Password)
+                {
+                    ModelState.AddModelError(string.Empty, "Wrong password!");
+                    return View(model);
+                }
                 user.Password = PasswordManager.Encode(model.NewPassword);
                 user.ConfirmedPassword = PasswordManager.Encode(model.ConfirmNewPassword);
                 _context.Update(user);
