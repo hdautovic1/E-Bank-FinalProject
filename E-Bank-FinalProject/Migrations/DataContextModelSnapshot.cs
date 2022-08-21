@@ -109,25 +109,25 @@ namespace E_Bank_FinalProject.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AccountID")
-                        .HasColumnType("int");
-
                     b.Property<double>("Amount")
                         .HasColumnType("double");
 
-                    b.Property<int>("CreditCardID")
+                    b.Property<int>("ToAccountID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
                     b.HasKey("TransactionID");
 
-                    b.HasIndex("AccountID");
+                    b.HasIndex("ToAccountID");
 
-                    b.HasIndex("CreditCardID");
-
-                    b.ToTable("Transaction", (string)null);
+                    b.ToTable("Transaction");
                 });
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.User", b =>
@@ -195,7 +195,7 @@ namespace E_Bank_FinalProject.Migrations
             modelBuilder.Entity("E_Bank_FinalProject.Models.Account", b =>
                 {
                     b.HasOne("E_Bank_FinalProject.Models.User", "User")
-                        .WithMany("Accounts")
+                        .WithMany()
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -206,7 +206,7 @@ namespace E_Bank_FinalProject.Migrations
             modelBuilder.Entity("E_Bank_FinalProject.Models.CreditCard", b =>
                 {
                     b.HasOne("E_Bank_FinalProject.Models.Account", "Account")
-                        .WithMany("CreditCards")
+                        .WithMany()
                         .HasForeignKey("AccountID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -216,21 +216,13 @@ namespace E_Bank_FinalProject.Migrations
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.Transaction", b =>
                 {
-                    b.HasOne("E_Bank_FinalProject.Models.Account", "Account")
-                        .WithMany("Transactions")
-                        .HasForeignKey("AccountID")
+                    b.HasOne("E_Bank_FinalProject.Models.Account", "ToAccount")
+                        .WithMany()
+                        .HasForeignKey("ToAccountID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("E_Bank_FinalProject.Models.CreditCard", "CreditCard")
-                        .WithMany("Transactions")
-                        .HasForeignKey("CreditCardID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-
-                    b.Navigation("CreditCard");
+                    b.Navigation("ToAccount");
                 });
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.UserRoles", b =>
@@ -250,23 +242,6 @@ namespace E_Bank_FinalProject.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("E_Bank_FinalProject.Models.Account", b =>
-                {
-                    b.Navigation("CreditCards");
-
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("E_Bank_FinalProject.Models.CreditCard", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("E_Bank_FinalProject.Models.User", b =>
-                {
-                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }

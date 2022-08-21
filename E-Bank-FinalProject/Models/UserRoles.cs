@@ -22,6 +22,5 @@ namespace E_Bank_FinalProject.Models
         [Required]
         public Role Role { get; set; }
 
-
     }
 }

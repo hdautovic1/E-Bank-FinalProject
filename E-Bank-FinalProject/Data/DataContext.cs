@@ -9,24 +9,23 @@ namespace E_Bank_FinalProject.Data
         {
         }
 
-        public DbSet<E_Bank_FinalProject.Models.User> User { get; set; } = default!;
-
+      
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<E_Bank_FinalProject.Models.User>().ToTable("User");
             modelBuilder.Entity<E_Bank_FinalProject.Models.UserRoles>().ToTable("UserRoles");
             modelBuilder.Entity<E_Bank_FinalProject.Models.Role>().ToTable("Role");
             modelBuilder.Entity<E_Bank_FinalProject.Models.Account>().ToTable("Account");
+            modelBuilder.Entity<E_Bank_FinalProject.Models.CreditCard>().ToTable("Transaction");
             modelBuilder.Entity<E_Bank_FinalProject.Models.CreditCard>().ToTable("CreditCard");
-            modelBuilder.Entity<E_Bank_FinalProject.Models.Transaction>().ToTable("Transaction");
-
         }
 
+        public DbSet<E_Bank_FinalProject.Models.User> User { get; set; } = default!;
         public DbSet<E_Bank_FinalProject.Models.Role>? Role { get; set; }
         public DbSet<E_Bank_FinalProject.Models.UserRoles>? UserRoles { get; set; }
         public DbSet<E_Bank_FinalProject.Models.Account>? Account { get; set; }
         public DbSet<E_Bank_FinalProject.Models.CreditCard>? CreditCard { get; set; }
-        public DbSet<E_Bank_FinalProject.Models.Transaction>? Transactions { get; set; }
+        public DbSet<E_Bank_FinalProject.Models.Transaction>? Transaction { get; set; }
 
     }
 }

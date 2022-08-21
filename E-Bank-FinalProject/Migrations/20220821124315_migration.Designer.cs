@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Bank_FinalProject.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220810151734_account-added")]
-    partial class accountadded
+    [Migration("20220821124315_migration")]
+    partial class migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "6.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.Account", b =>
@@ -37,6 +37,14 @@ namespace E_Bank_FinalProject.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("varchar(12)");
+
+                    b.Property<double>("Balance")
+                        .HasColumnType("double");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime(6)");
 
@@ -48,6 +56,32 @@ namespace E_Bank_FinalProject.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Account", (string)null);
+                });
+
+            modelBuilder.Entity("E_Bank_FinalProject.Models.CreditCard", b =>
+                {
+                    b.Property<int>("CreditCardID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("AccountID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreditCardName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("CreditCardNumber")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("varchar(12)");
+
+                    b.HasKey("CreditCardID");
+
+                    b.HasIndex("AccountID");
+
+                    b.ToTable("CreditCard", (string)null);
                 });
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.Role", b =>
@@ -69,6 +103,33 @@ namespace E_Bank_FinalProject.Migrations
                     b.HasKey("RoleID");
 
                     b.ToTable("Role", (string)null);
+                });
+
+            modelBuilder.Entity("E_Bank_FinalProject.Models.Transaction", b =>
+                {
+                    b.Property<int>("TransactionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double");
+
+                    b.Property<int>("ToAccountID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
+                    b.HasKey("TransactionID");
+
+                    b.HasIndex("ToAccountID");
+
+                    b.ToTable("Transaction");
                 });
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.User", b =>
@@ -136,12 +197,34 @@ namespace E_Bank_FinalProject.Migrations
             modelBuilder.Entity("E_Bank_FinalProject.Models.Account", b =>
                 {
                     b.HasOne("E_Bank_FinalProject.Models.User", "User")
-                        .WithMany("Accounts")
+                        .WithMany()
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("E_Bank_FinalProject.Models.CreditCard", b =>
+                {
+                    b.HasOne("E_Bank_FinalProject.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("E_Bank_FinalProject.Models.Transaction", b =>
+                {
+                    b.HasOne("E_Bank_FinalProject.Models.Account", "ToAccount")
+                        .WithMany()
+                        .HasForeignKey("ToAccountID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ToAccount");
                 });
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.UserRoles", b =>
@@ -161,11 +244,6 @@ namespace E_Bank_FinalProject.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("E_Bank_FinalProject.Models.User", b =>
-                {
-                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }
