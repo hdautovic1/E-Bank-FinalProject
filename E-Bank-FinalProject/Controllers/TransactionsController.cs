@@ -33,148 +33,61 @@ namespace E_Bank_FinalProject.Controllers
             return View(await dataContext.ToListAsync());
         }
 
-        // GET: Transactions/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult AddTransaction(int id)
         {
-            if (id == null || _context.Transaction == null)
-            {
-                return NotFound();
-            }
-
-            var transaction = await _context.Transaction
-                .Include(t => t.Account)
-                .FirstOrDefaultAsync(m => m.TransactionID == id);
-            if (transaction == null)
-            {
-                return NotFound();
-            }
-
-            return View(transaction);
-        }
-
-        // GET: Transactions/Create
-        public IActionResult AddTransaction()
-        {
-            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName");
+            var selectListItems = _context.Account.Where(a => a.AccountID != id);
+            ViewData["AccountID"] = new SelectList(selectListItems, "AccountID", "AccountName");
             return View();
         }
 
-        // POST: Transactions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTransaction(int id,[Bind("TransactionID,Amount,AccountID,TransactionType")] Transaction transaction)
+        public async Task<IActionResult> AddTransaction(int id, [Bind("TransactionID,Amount,AccountID")] Transaction transaction)
         {
-            var acc1 = await _context.Account.FirstOrDefaultAsync(a => a.AccountID == id);
-            var acc2 = await _context.Account.FirstOrDefaultAsync(a => a.AccountID == transaction.AccountID);
-            transaction.Account = acc1;
-            transaction.TransactionDate = DateTime.Today;
-            _context.Add(transaction);
-            acc1.Balance -= transaction.Amount;
-            acc2.Balance += transaction.Amount;
-            _context.Update(acc1);
-            _context.Update(acc2);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName", transaction.AccountID);
-            return View(transaction);
-        }
-
-        // GET: Transactions/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Transaction == null)
+            Account acc1, acc2;
+            try
             {
-                return NotFound();
+                acc1 = await _context.Account.FirstOrDefaultAsync(a => a.AccountID == id);
+                acc2 = await _context.Account.FirstOrDefaultAsync(a => a.AccountID == transaction.AccountID);
             }
-
-            var transaction = await _context.Transaction.FindAsync(id);
-            if (transaction == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty, "Invalid transaction");
+                var selectListItems1 = _context.Account.Where(a => a.AccountID != id);
+                ViewData["AccountID"] = new SelectList(selectListItems1, "AccountID", "AccountName");
+                return View(transaction);
+
             }
-            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName", transaction.AccountID);
-            return View(transaction);
-        }
-
-        // POST: Transactions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TransactionID,TransactionDate,Amount,AccountID,TransactionType")] Transaction transaction)
-        {
-            if (id != transaction.TransactionID)
+            if (acc1.Balance + acc1.Limit >= transaction.Amount && transaction.Amount > 0)
             {
-                return NotFound();
-            }
+                transaction.Account = acc1;
+                transaction.TransactionDate = DateTime.Today;
+                transaction.TransactionType = "Outcome";
+                _context.Add(transaction);
+                acc1.Balance -= transaction.Amount;
+                acc2.Balance += transaction.Amount;
+                Transaction t = new Transaction();
+                t.Account = acc2;
+                t.AccountID = acc2.AccountID;
+                t.Amount = -transaction.Amount;
+                t.TransactionType = "Income";
+                t.TransactionDate = DateTime.Today;
+                _context.Add(t);
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(transaction);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TransactionExists(transaction.TransactionID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(acc1);
+                _context.Update(acc2);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AccountID"] = new SelectList(_context.Account, "AccountID", "AccountName", transaction.AccountID);
-            return View(transaction);
-        }
-
-        // GET: Transactions/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Transaction == null)
+            else
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty, "Invalid transaction");
+                var selectListItems = _context.Account.Where(a => a.AccountID != id);
+                ViewData["AccountID"] = new SelectList(selectListItems, "AccountID", "AccountName");
+                return View(transaction);
             }
 
-            var transaction = await _context.Transaction
-                .Include(t => t.Account)
-                .FirstOrDefaultAsync(m => m.TransactionID == id);
-            if (transaction == null)
-            {
-                return NotFound();
-            }
-
-            return View(transaction);
         }
 
-        // POST: Transactions/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Transaction == null)
-            {
-                return Problem("Entity set 'DataContext.Transaction'  is null.");
-            }
-            var transaction = await _context.Transaction.FindAsync(id);
-            if (transaction != null)
-            {
-                _context.Transaction.Remove(transaction);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TransactionExists(int id)
-        {
-            return (_context.Transaction?.Any(e => e.TransactionID == id)).GetValueOrDefault();
-        }
     }
 }

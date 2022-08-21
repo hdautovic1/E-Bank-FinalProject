@@ -1,53 +1,69 @@
 ﻿@model IEnumerable<E_Bank_FinalProject.Models.Transaction>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Transactions";
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TransactionDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TransactionType)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Account.AccountName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionType)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TransactionID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TransactionID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TransactionID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<link rel="stylesheet" href="~/css/side.css" asp-append-version="true" />
+
+<div class="wrapper">
+    <nav id="sidebar" class="px-3">
+        <ul class="list-unstyled components">
+            <li>
+                <a asp-controller="Users" asp-action="MyProfile">My profile</a>
+            </li>
+            <li>
+                <a asp-controller="Accounts" asp-action="Index">Accounts</a>
+            </li>
+            <li>
+                <a asp-controller="CreditCards" asp-action="Index">Credit cards</a>
+            </li>
+            <li>
+                <a asp-controller="Transactions" asp-action="Index">Transactions</a>
+            </li>
+        </ul>
+    </nav>
+    <!-- Page Content  -->
+    <div id="content" class="bg-light px-4">
+        <h3 class="pt-3">Transactions: </h3>
+        <hr />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TransactionDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Amount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TransactionType)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TransactionDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Amount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Account.AccountName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TransactionType)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

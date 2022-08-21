@@ -1,6 +1,7 @@
 using E_Bank_FinalProject.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DataContext");
@@ -19,7 +20,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
     options.LoginPath = "/login";
-    options.AccessDeniedPath = "/denied";
 });
 var app = builder.Build();
 

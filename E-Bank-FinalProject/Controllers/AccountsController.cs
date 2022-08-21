@@ -28,7 +28,7 @@ namespace E_Bank_FinalProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddAccount([Bind("AccountName,AccountNumber,AccountDescription,Balance")] Account account)
+        public async Task<IActionResult> AddAccount([Bind("AccountName,AccountNumber,AccountDescription")] Account account)
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
             User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
@@ -36,7 +36,8 @@ namespace E_Bank_FinalProject.Controllers
             account.User = user;
             account.UserID = user.UserID;
             account.DateCreated = DateTime.Today;
-
+            account.Balance = 0;
+            account.Limit = 1000;
             _context.Add(account);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

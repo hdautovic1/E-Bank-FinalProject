@@ -44,6 +44,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Balance)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Limit)
+                    </th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -69,12 +72,15 @@
                             @Html.DisplayFor(modelItem => item.Balance)
                         </td>
                         <td>
+                            @Html.DisplayFor(modelItem => item.Limit)
+                        </td>
+                        <td>
                             <a style="color:#0d6efd" asp-action="Delete" asp-route-id="@item.AccountID">Remove account</a>
                         </td>
                         <td>
                             <a style="color:#0d6efd" asp-controller="CreditCards" asp-action="AddCreditCard" asp-route-id="@item.AccountID">Add credit card</a>
                         </td>
-                          <td>
+                        <td>
                             <a style="color:#0d6efd" asp-controller="Transactions" asp-action="AddTransaction" asp-route-id="@item.AccountID">Add transaction</a>
                         </td>
                     </tr>

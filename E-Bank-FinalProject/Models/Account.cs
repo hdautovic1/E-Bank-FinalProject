@@ -32,6 +32,10 @@ namespace E_Bank_FinalProject.Models
         public double Balance { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
+        public double Limit { get; set; }
+
+        [Required]
         public User User { get; set; }
 
         [ForeignKey("User")]
