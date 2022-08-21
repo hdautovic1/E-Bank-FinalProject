@@ -28,6 +28,7 @@ namespace E_Bank_FinalProject.Models
         public string AccountDescription { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
         public double Balance { get; set; }
 
         [Required]
@@ -35,8 +36,5 @@ namespace E_Bank_FinalProject.Models
 
         [ForeignKey("User")]
         public int UserID { get; set; }
-
-        public ICollection<CreditCard> CreditCards { get; set; }
-        public ICollection<Transaction> Transactions { get; set; }
     }
 }

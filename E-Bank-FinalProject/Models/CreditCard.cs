@@ -26,9 +26,5 @@ namespace E_Bank_FinalProject.Models
 
         [Required]
         public Account Account { get; set; }
-
-        public ICollection<Transaction> Transactions { get; set; }
-
-
     }
 }

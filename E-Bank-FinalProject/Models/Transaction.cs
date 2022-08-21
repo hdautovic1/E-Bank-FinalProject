@@ -14,6 +14,7 @@ namespace E_Bank_FinalProject.Models
         public DateTime TransactionDate { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
         public double Amount { get; set; }
 
         [Required]
@@ -22,9 +23,8 @@ namespace E_Bank_FinalProject.Models
         [ForeignKey("Account")]
         public int AccountID { get; set; }
 
-        public CreditCard CreditCard { get; set; }
-
-        [ForeignKey("CreditCard")]
-        public int CreditCardID { get; set; }
+        [Required]
+        [StringLength(40)]
+        public string TransactionType { get; set; }
     }
 }
