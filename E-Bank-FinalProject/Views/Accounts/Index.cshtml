@@ -17,7 +17,7 @@
             <li>
                 <a asp-controller="CreditCards" asp-action="Index">Credit cards</a>
             </li>
-              <li>
+            <li>
                 <a asp-controller="Transactions" asp-action="Index">Transactions</a>
             </li>
         </ul>
@@ -46,6 +46,7 @@
                     </th>
                     <th></th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -72,6 +73,9 @@
                         </td>
                         <td>
                             <a style="color:#0d6efd" asp-controller="CreditCards" asp-action="AddCreditCard" asp-route-id="@item.AccountID">Add credit card</a>
+                        </td>
+                          <td>
+                            <a style="color:#0d6efd" asp-controller="Transactions" asp-action="AddTransaction" asp-route-id="@item.AccountID">Add transaction</a>
                         </td>
                     </tr>
                 }

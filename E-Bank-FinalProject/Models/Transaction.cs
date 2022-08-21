@@ -18,10 +18,10 @@ namespace E_Bank_FinalProject.Models
         public double Amount { get; set; }
 
         [Required]
-        public Account ToAccount { get; set; }
+        public Account Account { get; set; }
 
         [ForeignKey("Account")]
-        public int ToAccountID { get; set; }
+        public int AccountID { get; set; }
 
         [Required]
         [StringLength(40)]

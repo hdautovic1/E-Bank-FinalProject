@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Bank_FinalProject.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220821124315_migration")]
+    [Migration("20220821145338_migration")]
     partial class migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,11 +111,11 @@ namespace E_Bank_FinalProject.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("AccountID")
+                        .HasColumnType("int");
+
                     b.Property<double>("Amount")
                         .HasColumnType("double");
-
-                    b.Property<int>("ToAccountID")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime(6)");
@@ -127,7 +127,7 @@ namespace E_Bank_FinalProject.Migrations
 
                     b.HasKey("TransactionID");
 
-                    b.HasIndex("ToAccountID");
+                    b.HasIndex("AccountID");
 
                     b.ToTable("Transaction");
                 });
@@ -218,13 +218,13 @@ namespace E_Bank_FinalProject.Migrations
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.Transaction", b =>
                 {
-                    b.HasOne("E_Bank_FinalProject.Models.Account", "ToAccount")
+                    b.HasOne("E_Bank_FinalProject.Models.Account", "Account")
                         .WithMany()
-                        .HasForeignKey("ToAccountID")
+                        .HasForeignKey("AccountID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ToAccount");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("E_Bank_FinalProject.Models.UserRoles", b =>
