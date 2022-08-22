@@ -63,13 +63,14 @@ namespace E_Bank_FinalProject.Controllers
                 transaction.Account = acc1;
                 transaction.TransactionDate = DateTime.Today;
                 transaction.TransactionType = "Outcome";
+                transaction.Amount=-transaction.Amount;
                 _context.Add(transaction);
-                acc1.Balance -= transaction.Amount;
+                acc1.Balance += transaction.Amount;
                 acc2.Balance += transaction.Amount;
                 Transaction t = new Transaction();
                 t.Account = acc2;
                 t.AccountID = acc2.AccountID;
-                t.Amount = -transaction.Amount;
+                t.Amount = transaction.Amount;
                 t.TransactionType = "Income";
                 t.TransactionDate = DateTime.Today;
                 _context.Add(t);

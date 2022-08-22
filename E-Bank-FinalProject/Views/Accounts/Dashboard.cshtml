@@ -1,0 +1,49 @@
+﻿@model E_Bank_FinalProject.Models.Account
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<link rel="stylesheet" href="~/css/side.css" asp-append-version="true" />
+
+<div class="wrapper">
+    <nav id="sidebar" class="px-3">
+        <ul class="list-unstyled components">
+            <li>
+                <a asp-controller="Accounts" asp-action="Dashboard">Dashboard</a>
+            </li>
+            <li>
+                <a asp-controller="Users" asp-action="MyProfile">My profile</a>
+            </li>
+            <li>
+                <a asp-controller="Accounts" asp-action="Index">Accounts</a>
+            </li>
+            <li>
+                <a asp-controller="CreditCards" asp-action="Index">Credit cards</a>
+            </li>
+            <li>
+                <a asp-controller="Transactions" asp-action="Index">Transactions</a>
+            </li>
+        </ul>
+    </nav>
+    <!-- Page Content  -->
+    <div id="content" class="bg-light px-4">
+        <h3 class="pt-3">Dashboard: </h3>
+        <hr />
+        <div class="row" style="min-height:150px">
+            <div class="col-sm well-md m-1 text-center align-middle" style="background-color:#f0f0f0">
+                Available funds: @ViewBag.Available$
+            </div>
+            <div class="col-sm well-md m-1 text-center align-middle" style="background-color:#f0f0f0">
+                Income: @ViewBag.Income$
+            </div>
+            <div class="col-sm well-md m-1 text-center align-middle" style="background-color:#f0f0f0">
+                Outcome: @ViewBag.Outcome$
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

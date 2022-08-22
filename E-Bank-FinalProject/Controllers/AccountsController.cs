@@ -25,6 +25,38 @@ namespace E_Bank_FinalProject.Controllers
         {
             return View();
         }
+        public async Task<IActionResult> DashBoard()
+
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+            double available = 0, income = 0, outcome = 0;
+            var accounts = _context.Account.Where(a => a.UserID == user.UserID);
+            foreach (var item in accounts)
+            {
+                available += item.Limit + item.Balance;
+            }
+            var transactions = _context.Transaction.Include(a => a.Account)
+            .Where(u => u.Account.UserID == user.UserID);
+
+            foreach (var item in transactions)
+            {
+                if (item.TransactionType.Equals("Income"))
+                {
+                    income += item.Amount;
+                }
+                else if (item.TransactionType.Equals("Outcome"))
+
+                {
+                    outcome += item.Amount;
+                }
+            }
+            ViewBag.Available = available;
+            ViewBag.Income = income;
+            ViewBag.Outcome = outcome;
+
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
