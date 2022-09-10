@@ -3,6 +3,34 @@
 @{
     ViewData["Title"] = "Dashboard";
 }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<body>
+
+<script>
+var xValues = [50,60,70,80,90,100,110,120,130,140,150];
+var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+
+new Chart("myChart", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [{
+      fill: false,
+      lineTension: 0,
+      backgroundColor: "rgba(0,0,255,1.0)",
+      borderColor: "rgba(0,0,255,0.1)",
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{ticks: {min: 6, max:16}}],
+    }
+  }
+});
+</script>
+
 <link rel="stylesheet" href="~/css/side.css" asp-append-version="true" />
 
 <div class="wrapper">
@@ -29,17 +57,31 @@
     <div id="content" class="bg-light px-4">
         <h3 class="pt-3">Dashboard: </h3>
         <hr />
-        <div class="row" style="min-height:150px">
-            <div class="col-sm well-md m-1 text-center align-middle" style="background-color:#f0f0f0">
-                Available funds: @ViewBag.Available$
-            </div>
-            <div class="col-sm well-md m-1 text-center align-middle" style="background-color:#f0f0f0">
-                Income: @ViewBag.Income$
-            </div>
-            <div class="col-sm well-md m-1 text-center align-middle" style="background-color:#f0f0f0">
-                Outcome: @ViewBag.Outcome$
+        <div>
+            <div class="row" style="min-height:180px">
+                <div class="col-sm well-md m-3 p-1" style="background-color:#f0f0f0; font-size:17pt">
+                    Available funds:
+                    <h3 class="w-100 h-100 text-center justify-content-center p-2">
+                        @ViewBag.Available$
+                    </h3>
+                </div>
+                <div class="col-sm well-md m-3 p-1" style="background-color:#f0f0f0; font-size:17pt">
+                    Income:
+                    <h3 class="w-100 h-100 text-center justify-content-center p-2">
+                        @ViewBag.Income$
+                    </h3>
+                </div>
+                <div class="col-sm well-md m-3 p-1" style="background-color:#f0f0f0; font-size:17pt">
+                    Outcome:
+                    <h3 class="w-100 h-100 text-center justify-content-center p-2">
+                        @ViewBag.Outcome$
+                    </h3>
+                </div>
             </div>
         </div>
+
+        <canvas id="myChart" style="width:100%; height:500px;"></canvas>
+
     </div>
 </div>
 @section Scripts {
