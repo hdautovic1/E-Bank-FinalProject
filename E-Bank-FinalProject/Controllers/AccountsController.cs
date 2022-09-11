@@ -25,47 +25,6 @@ namespace E_Bank_FinalProject.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public async Task<List<object>> getData()
-        {
-            List<object> data = new List<object>();
-            List<string> labels = new List<string>();
-
-            var dt = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-
-            for (; dt <= DateTime.Today; dt = dt.AddDays(1))
-            {
-                labels.Add(dt.ToString());
-            }
-            data.Add(labels);
-
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
-            double available = 0, income = 0, outcome = 0, start = 0;
-            var accounts = _context.Account.Where(a => a.UserID == user.UserID);
-            foreach (var item in accounts)
-            {
-                available += item.Limit + item.Balance;
-                start += item.Balance;
-            }
-
-            var transactions = _context.Transaction.Include(a => a.Account)
-            .Where(u => u.Account.UserID == user.UserID);
-
-            foreach (var item in transactions)
-            {
-                if (item.TransactionType.Equals("Income"))
-                {
-                    income += item.Amount;
-                }
-                else if (item.TransactionType.Equals("Outcome"))
-
-                {
-                    outcome += item.Amount;
-                }
-            }
-            return data;
-        }
         public async Task<IActionResult> DashBoard()
 
         {
@@ -76,7 +35,6 @@ namespace E_Bank_FinalProject.Controllers
             foreach (var item in accounts)
             {
                 available += item.Limit + item.Balance;
-                start += item.Balance;
             }
 
             var transactions = _context.Transaction.Include(a => a.Account)

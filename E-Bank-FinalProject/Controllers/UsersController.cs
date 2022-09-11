@@ -103,7 +103,6 @@ namespace E_Bank_FinalProject.Controllers
             User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
             return View(user);
         }
-        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Bank_FinalProject.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220821163845_addAccountLimit")]
-    partial class addAccountLimit
+    [Migration("20220910173104_migration1")]
+    partial class migration1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

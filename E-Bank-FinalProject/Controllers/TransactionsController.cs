@@ -21,16 +21,24 @@ namespace E_Bank_FinalProject.Controllers
         }
 
         // GET: Transactions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? filterBy)
         {
-
             string email = User.FindFirstValue(ClaimTypes.Email);
             User user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
 
             var dataContext = _context.Transaction.Include(a => a.Account)
               .Where(u => u.Account.UserID == user.UserID);
 
-            return View(await dataContext.ToListAsync());
+            if (filterBy == null)
+            {
+                return View(await dataContext.ToListAsync());
+            }
+            else
+            {
+                var list = await dataContext.ToListAsync();
+                list = list.FindAll(x => string.Equals(x.TransactionType,filterBy , StringComparison.OrdinalIgnoreCase));
+                return list.Count==0 ? View(await dataContext.ToListAsync()) : View(list);
+            }           
         }
 
         public IActionResult AddTransaction(int id)
@@ -39,7 +47,14 @@ namespace E_Bank_FinalProject.Controllers
             ViewData["AccountID"] = new SelectList(selectListItems, "AccountID", "AccountName");
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> Filter(IFormCollection formCollection)
+        {
+          
+            string filterby = formCollection["filterBy"].ToString();
+            return RedirectToAction("index", new { filterBy = filterby });
 
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddTransaction(int id, [Bind("TransactionID,Amount,AccountID")] Transaction transaction)
@@ -66,11 +81,11 @@ namespace E_Bank_FinalProject.Controllers
                 transaction.Amount=-transaction.Amount;
                 _context.Add(transaction);
                 acc1.Balance += transaction.Amount;
-                acc2.Balance += transaction.Amount;
+                acc2.Balance -= transaction.Amount;
                 Transaction t = new Transaction();
                 t.Account = acc2;
                 t.AccountID = acc2.AccountID;
-                t.Amount = transaction.Amount;
+                t.Amount = -transaction.Amount;
                 t.TransactionType = "Income";
                 t.TransactionDate = DateTime.Today;
                 _context.Add(t);
